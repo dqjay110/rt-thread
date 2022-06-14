@@ -525,13 +525,16 @@ static rt_size_t _serial_fifo_tx_blocking_buf(struct rt_device        *dev,
                                                (rt_uint8_t *)buffer + offset,
                                                size);
 
-        offset += tx_fifo->put_size;
-        size -= tx_fifo->put_size;
+
         /* Call the transmit interface for transmission */
         serial->ops->transmit(serial,
                              (rt_uint8_t *)buffer + offset,
                              tx_fifo->put_size,
                              RT_SERIAL_TX_BLOCKING);
+        
+        offset += tx_fifo->put_size;
+        size -= tx_fifo->put_size;
+        
         /* Waiting for the transmission to complete */
         rt_completion_wait(&(tx_fifo->tx_cpt), RT_WAITING_FOREVER);
     }
